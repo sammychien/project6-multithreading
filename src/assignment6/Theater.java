@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Theater {
-	private AtomicInteger seatsSold;
+	private AtomicInteger seatsSold; // use AtomicInteger bc of concurrent modification worries
 	private int totalSeats;
 	private String show;
 	private int numRows;
 	private int seatsPerRow;
 	private ArrayList<Seat> seatArray;
 	private ArrayList<Ticket> ticketArray;
-	private Object syncObj;
+	private Object syncObj; // lock for printTicket and bestAvailableSeat
 
 	/*
 	 * Represents a seat in the theater A1, A2, A3, ... B1, B2, B3 ...
@@ -141,7 +141,7 @@ public class Theater {
 		this.ticketArray = new ArrayList<Ticket>();
 		this.seatsSold = new AtomicInteger(0);
 		this.totalSeats = numRows * seatsPerRow;
-		this.syncObj = new Object();
+		this.syncObj = new Object(); // create the lock
 	}
 
 	/*
@@ -151,7 +151,7 @@ public class Theater {
 	 */
 	public Seat bestAvailableSeat() {
 		// TODO: Implement this method
-		synchronized (syncObj) {
+		synchronized (syncObj) { // make sure that this block of code happens together
 			if (this.seatsSold.get() >= this.totalSeats)
 				return null;
 			return this.seatArray.get(seatsSold.get()); //get next available seat based on current # of seats sold

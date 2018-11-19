@@ -22,7 +22,7 @@ public class BookingClient {
 	
 	private Map<String, Integer> offices;
 	private Theater theater;
-	private AtomicInteger clientID;
+	private AtomicInteger clientID; // use AtomicInteger so you don't have to worry about concurrent modification of clientID
 	
 	
 	public static void main(String[] args) {
@@ -66,12 +66,11 @@ public class BookingClient {
 		 *  	start the thread
 		 *  
 		 */
-		
 		for (String boxOfficeName : this.offices.keySet()) {
 			Thread boxOfficeThread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					for (int i = 0; i < offices.get(boxOfficeName); i++) {
+					for (int i = 0; i < offices.get(boxOfficeName); i++) { 
 						// find best seat and assign it with a ticket
 						// make sure this block of code is synchronized
 						// use theatre as lock to ensure that no other box office can simultaneously access theater
@@ -85,13 +84,10 @@ public class BookingClient {
 				}
 			});
 			threadList.add(boxOfficeThread);
-//			boxOfficeThread.start();
-			
 		}
 		for (Thread t : threadList) {
 			t.start();
 		}
-		
 		// find out when all the threads are dead (check .isAlive())
 		AtomicBoolean allDead = new AtomicBoolean(false);
 		while (allDead.get() == false) {
